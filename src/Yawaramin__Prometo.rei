@@ -10,7 +10,7 @@ type error = [ | `Prometo_cancelled];
     We can't tell until runtime whether the promise has been cancelled or
     not, so the error type ['e] always needs to have a 'minimum error' of
     [error]. */
-type t('a, 'e) constraint 'e = [> error];
+type t(+'a, 'e) constraint 'e = [> error];
 
 /** [cancel(t)] sets the promise [t] as cancelled. This means that all
     subsequent operations on [t], like [flatMap], [map], [toPromise], etc.
@@ -37,6 +37,16 @@ let flatMap: (~f: 'a => t('b, 'e), t('a, 'e)) => t('b, 'e);
     discards the result. If [t] is errored or cancelled, is a no-op. */
 let forEach: (~f: 'a => 'b, t('a, 'e)) => unit;
 
+/** [fromArray(array)] chains the given [array] of promises in sequence,
+    returning a single promise containing the array of results of the
+    input promises. */
+let fromArray: array(t('a, 'e)) => t(array('a), 'e);
+
+/** [fromPromise(promise)] converts a JavaScript promise into a Prometo
+    promise (this means ensuring that the promise is not rejected). */
+let fromPromise:
+  Js.Promise.t('a) => t('a, [> | `Prometo_error(Js.Promise.error)]);
+
 /** [make(a)] returns a promise which contains the successful result [a]. */
 let make: 'a => t('a, error);
 
@@ -44,11 +54,6 @@ let make: 'a => t('a, error);
     the input promise [t]'s result. If [t] is errored or cancelled,
     returns it directly. */
 let map: (~f: 'a => 'b, t('a, 'e)) => t('b, 'e);
-
-/** [fromPromise(promise)] converts a JavaScript promise into a Prometo
-    promise (this means ensuring that the promise is not rejected). */
-let fromPromise:
-  Js.Promise.t('a) => t('a, [> | `Prometo_error(Js.Promise.error)]);
 
 /** [toPromise(t)] converts the Prometo promise [t] into a standard
     JavaScript promise. This means 'unwrapping' the contained result

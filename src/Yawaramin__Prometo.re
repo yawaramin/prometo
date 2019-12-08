@@ -34,6 +34,24 @@ module Error = {
 external cancel: (t('a, 'e), [@bs.as {json|true|json}] _) => unit =
   "_prometo_cancelled";
 
+let updateResult = (result, elem) =>
+  switch (result, elem) {
+  | (_, Error(_) as error) => error
+  | (Error(_), _) => result
+  | (Ok(elems), Ok(elem)) =>
+    elems |> Js.Array.push(elem) |> ignore;
+    Ok(elems);
+  };
+
+let fromArray = array =>
+  array
+  |> Js.Promise.all
+  |> Js.Promise.then_(results =>
+       results
+       |> Js.Array.reduce(updateResult, Ok([||]))
+       |> Js.Promise.resolve
+     );
+
 let fromPromise = promise =>
   promise
   |> Js.Promise.then_(make)
