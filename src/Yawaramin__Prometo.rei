@@ -28,9 +28,6 @@ type t('a, 'e) constraint 'e = [> error];
 external cancel: (t('a, 'e), [@bs.as {json|true|json}] _) => unit =
   "_prometo_cancelled";
 
-/** [error(e)] returns a promise which contains the error result [e]. */
-let error: 'e => t('a, 'e);
-
 /** [flatMap(~f, t)] runs the function [f] on the completion result of
     promise [t], unless [t] is in an error state or is cancelled. If
     successful it returns the result of [f]. */
@@ -48,26 +45,10 @@ let make: 'a => t('a, error);
     returns it directly. */
 let map: (~f: 'a => 'b, t('a, 'e)) => t('b, 'e);
 
-/** [mapError(~f, t)] returns a promise which has the error result of
-    calling [f] on the input promise [t]'s error result. If [t] is
-    cancelled, returns it directly. */
-let mapError: (~f: 'e1 => 'e2, t('a, 'e1)) => t('a, 'e2);
-
-/** [ofPromise(promise)] converts a JavaScript promise into a Prometo
+/** [fromPromise(promise)] converts a JavaScript promise into a Prometo
     promise (this means ensuring that the promise is not rejected). */
-let ofPromise:
+let fromPromise:
   Js.Promise.t('a) => t('a, [> | `Prometo_error(Js.Promise.error)]);
-
-/** [recover(~f, t)] returns a promise with a success result obtained by
-    calling [f] on the failure result of [t]. This is unless [t] has a
-    successful result, or is cancelled, in which case this is a no-op. In
-    other words: it's not possible (by design) to recover from a
-    cancelled promise. */
-let recover: (~f: 'e => 'a2, t('a1, 'e)) => t('a2, error);
-
-/** [recoverWith(~f, t)] is like [recover], except [f] is asynchronous
-    i.e. itself returns a promise. */
-let recoverWith: (~f: 'e => t('a2, error), t('a1, 'e)) => t('a2, error);
 
 /** [toPromise(t)] converts the Prometo promise [t] into a standard
     JavaScript promise. This means 'unwrapping' the contained result
@@ -75,3 +56,33 @@ let recoverWith: (~f: 'e => t('a2, error), t('a1, 'e)) => t('a2, error);
     was cancelled. */
 let toPromise:
   t('a, [> error | `Prometo_error(Js.Promise.error)]) => Js.Promise.t('a);
+
+/** Operations to handle promises containing errors. */
+module Error: {
+  /** [forEach(~f, t)] calls [f] with the error result of [t] and
+     discards the result. If [t] is succeeded or cancelled, is a no-op. */
+  let forEach: (~f: 'e1 => [> error], t('a, 'e1)) => unit;
+
+  /** [flatMap(~f, t)] converts an errored promise [t] into a new promise
+      using the function [f]. The new promise may be succeeded or errored,
+      unless [t] is cancelled, in which case the new promise is also
+      cancelled.
+
+      If [t] is a succeeded promise, returns [t] directly. */
+  let flatMap: (~f: 'e1 => t('a2, 'e2), t('a1, 'e1)) => t('a2, 'e2);
+
+  /** [make(e)] returns a promise which contains the error result [e]. */
+  let make: 'e => t('a, 'e);
+
+  /** [map(~f, t)] returns a promise which has the error result of
+      calling [f] on the input promise [t]'s error result. If [t] is
+      succeeded or cancelled, returns it directly. */
+  let map: (~f: 'e1 => 'e2, t('a, 'e1)) => t('a, 'e2);
+
+  /** [recover(~f, t)] returns a promise with a success result obtained
+      by calling [f] on the failure result of [t]. This is unless [t] has
+      a successful result, or is cancelled, in which case this is a no-op.
+      In other words: it's not possible (by design) to recover from a
+      cancelled promise. */
+  let recover: (~f: 'e => 'a2, t('a1, 'e)) => t('a2, error);
+};
