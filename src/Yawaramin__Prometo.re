@@ -1,11 +1,15 @@
 type error = [ | `Prometo_cancelled];
-
 type t('a, 'e) = Js.Promise.t(result('a, [> error] as 'e));
 
 exception Prometo_cancelled;
 
-[@bs.get]
-external cancelled: t('a, 'e) => option(bool) = "_prometo_cancelled";
+type cancelledSymbol;
+[@bs.val] external cancelledSymbol: unit => cancelledSymbol = "Symbol";
+let cancelledSymbol = cancelledSymbol();
+
+[@bs.get_index]
+external cancelled: (t(_, _), cancelledSymbol) => option(bool) = "";
+let cancelled = t => cancelled(t, cancelledSymbol);
 
 let make = a => Js.Promise.resolve(Ok(a));
 
@@ -30,9 +34,9 @@ module Error = {
   let recover = (~f, t) => flatMap(~f=e => e |> f |> ok, t);
 };
 
-[@bs.set]
-external cancel: (t('a, 'e), [@bs.as {json|true|json}] _) => unit =
-  "_prometo_cancelled";
+[@bs.set_index]
+external cancel: (t(_, _), cancelledSymbol, bool) => unit = "";
+let cancel = t => cancel(t, cancelledSymbol, true);
 
 let updateResult = (result, elem) =>
   switch (result, elem) {

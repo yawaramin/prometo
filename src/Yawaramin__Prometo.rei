@@ -24,9 +24,7 @@ type t(+'a, 'e) constraint 'e = [> error];
     promise before it was converted into a Prometo type [t]. In other
     words, any callbacks registered using [Js.Promise.then_] will {i not}
     be cancelled. */
-[@bs.set]
-external cancel: (t('a, 'e), [@bs.as {json|true|json}] _) => unit =
-  "_prometo_cancelled";
+let cancel: t(_, _) => unit;
 
 /** [flatMap(~f, t)] runs the function [f] on the completion result of
     promise [t], unless [t] is in an error state or is cancelled. If
