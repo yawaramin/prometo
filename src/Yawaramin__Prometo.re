@@ -1,4 +1,4 @@
-type error = [ | `Prometo_cancelled];
+type error = [ | `Prometo_error(Js.Promise.error) | `Prometo_cancelled];
 type t('a, 'e) = Js.Promise.t(result('a, [> error] as 'e));
 
 exception Prometo_cancelled;
@@ -24,7 +24,8 @@ module Error = {
         | (_, Some(true)) => make(`Prometo_cancelled)
         | (Ok(_), _)
         | (Error(`Prometo_cancelled), _) => Obj.magic(t)
-        | (Error(e), _) => f(e)
+        | (Error(e), _) =>
+          e |> f |> Js.Promise.catch(e => make(`Prometo_error(e)))
         },
       t,
     );
@@ -62,16 +63,15 @@ let fromPromise = promise =>
   |> Js.Promise.catch(e => Error.make(`Prometo_error(e)));
 
 let flatMap = (~f, t) =>
-  Js.Promise.(
-    then_(
-      result =>
-        switch (result, cancelled(t)) {
-        | (_, Some(true)) => resolve(Error(`Prometo_cancelled))
-        | (Ok(a), _) => f(a)
-        | (Error(_), _) => Obj.magic(t)
-        },
-      t,
-    )
+  Js.Promise.then_(
+    result =>
+      switch (result, cancelled(t)) {
+      | (_, Some(true)) => Error.make(`Prometo_cancelled)
+      | (Ok(a), _) =>
+        a |> f |> Js.Promise.catch(e => Error.make(`Prometo_error(e)))
+      | (Error(err), _) => Error.make(err)
+      },
+    t,
   );
 
 let map = (~f, t) => flatMap(~f=a => a |> f |> make, t);

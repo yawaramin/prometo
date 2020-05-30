@@ -1,7 +1,9 @@
 /** Type-safe, cancelable JavaScript promises for ReasonML. */
 
-/** The 'base' error type of all Prometo promises. */
-type error = [ | `Prometo_cancelled];
+/** The 'base' error type of all Prometo promises. If a promise is in a
+    failed state, it is always possible for the failure to be from a
+    caught exception, or because the promise was cancelled. */
+type error = [ | `Prometo_error(Js.Promise.error) | `Prometo_cancelled];
 
 /** Promise with result type ['a] and polymorphic variant errors of type
     ['e]. At runtime this is just a standard JavaScript promise that is
@@ -10,7 +12,7 @@ type error = [ | `Prometo_cancelled];
     We can't tell until runtime whether the promise has been cancelled or
     not, so the error type ['e] always needs to have a 'minimum error' of
     [error]. */
-type t(+'a, 'e) constraint 'e = [> error];
+type t(+_, 'e) constraint 'e = [> error];
 
 /** [cancel(t)] sets the promise [t] as cancelled. This means that all
     subsequent operations on [t], like [flatMap], [map], [toPromise], etc.
@@ -28,12 +30,13 @@ let cancel: t(_, _) => unit;
 
 /** [flatMap(~f, t)] runs the function [f] on the completion result of
     promise [t], unless [t] is in an error state or is cancelled. If
-    successful it returns the result of [f]. */
+    successful it returns the result of [f]. If [f] throws an exception
+    it catches and safely returns a promise in an error state. */
 let flatMap: (~f: 'a => t('b, 'e), t('a, 'e)) => t('b, 'e);
 
 /** [forEach(~f, t)] calls [f] with the successful result of [t] and
     discards the result. If [t] is errored or cancelled, is a no-op. */
-let forEach: (~f: 'a => 'b, t('a, 'e)) => unit;
+let forEach: (~f: 'a => 'b, t('a, _)) => unit;
 
 /** [fromArray(array)] chains the given [array] of promises in sequence,
     returning a single promise containing the array of results of the
@@ -42,8 +45,7 @@ let fromArray: array(t('a, 'e)) => t(array('a), 'e);
 
 /** [fromPromise(promise)] converts a JavaScript promise into a Prometo
     promise (this means ensuring that the promise is not rejected). */
-let fromPromise:
-  Js.Promise.t('a) => t('a, [> | `Prometo_error(Js.Promise.error)]);
+let fromPromise: Js.Promise.t('a) => t('a, _);
 
 /** [make(a)] returns a promise which contains the successful result [a]. */
 let make: 'a => t('a, error);
@@ -70,6 +72,9 @@ module Error: {
       using the function [f]. The new promise may be succeeded or errored,
       unless [t] is cancelled, in which case the new promise is also
       cancelled.
+
+      If [f] throws an exception, safely catches it and returns a promise
+      in an error state.
 
       If [t] is a succeeded promise, returns [t] directly. */
   let flatMap: (~f: 'e1 => t('a2, 'e2), t('a1, 'e1)) => t('a2, 'e2);
