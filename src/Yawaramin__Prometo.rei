@@ -62,6 +62,39 @@ let map: (~f: 'a => 'b, t('a, 'e)) => t('b, 'e);
 let toPromise:
   t('a, [> error | `Prometo_error(Js.Promise.error)]) => Js.Promise.t('a);
 
+/** {2 Joining promises together}
+
+    The following functions join multiple promises together into a single
+    promise containing the results of all the individual promises. */
+
+let zip2: (t('a1, 'e), t('a2, 'e)) => t(('a1, 'a2), 'e);
+let zip3: (t('a1, 'e), t('a2, 'e), t('a3, 'e)) => t(('a1, 'a2, 'a3), 'e);
+let zip4:
+  (t('a1, 'e), t('a2, 'e), t('a3, 'e), t('a4, 'e)) =>
+  t(('a1, 'a2, 'a3, 'a4), 'e);
+let zip5:
+  (t('a1, 'e), t('a2, 'e), t('a3, 'e), t('a4, 'e), t('a5, 'e)) =>
+  t(('a1, 'a2, 'a3, 'a4, 'a5), 'e);
+let zip6:
+  (
+    t('a1, 'e),
+    t('a2, 'e),
+    t('a3, 'e),
+    t('a4, 'e),
+    t('a5, 'e),
+    t('a6, 'e)
+  ) =>
+  t(('a1, 'a2, 'a3, 'a4, 'a5, 'a6), 'e);
+
+/** Operators that may be handy when processing lots of promises. */
+module Infix: {
+  /** The same as [flatMap]. */
+  let (>>=): (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e);
+
+  /** The same as [map]. */
+  let (>|=): (t('a, 'e), 'a => 'b) => t('b, 'e);
+};
+
 /** Operations to handle promises containing errors. */
 module Error: {
   /** [forEach(~f, t)] calls [f] with the error result of [t] and
