@@ -15,8 +15,10 @@ Prometo is type-safe because of the following:
 - Also because a Prometo promise is a 'promise of result of data', it
   encodes an error at the type-level using the Reason `result('a, 'e)`
   type. In fact, Prometo ensures that its wrapped promises are not
-  rejected (with some caveats). So you can be sure that a Prometo
-  promise is actually not going to throw at runtime.
+  rejected, as long as you use its operations. So you can be sure that a
+  Prometo promise is actually not going to throw at runtime. The only
+  point at which you need to care about catching a possible exception is
+  when converting it back into a normal JavaScript promise.
 
 Because it's just a JavaScript promise wrapper, it's also easy to
 convert back and forth between JavaScript and Prometo promises.
