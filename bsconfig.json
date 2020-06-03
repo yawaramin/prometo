@@ -1,5 +1,5 @@
 {
-  "name": "prometo",
+  "name": "@yawaramin/prometo",
   "version": "0.1.0",
   "sources": {
     "dir": "src",
