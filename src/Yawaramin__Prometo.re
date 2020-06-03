@@ -74,9 +74,11 @@ let flatMap = (~f, t) =>
     t,
   );
 
-let map = (~f, t) => flatMap(~f=a => a |> f |> make, t);
+let map = (~f) => flatMap(~f=a => a |> f |> make);
 
 let forEach = (~f, t) => t |> map(~f) |> ignore;
+
+let thenPromise = (~f) => flatMap(~f=a => a |> f |> fromPromise);
 
 let toPromise = t =>
   Js.Promise.(

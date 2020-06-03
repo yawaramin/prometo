@@ -32,6 +32,17 @@ promise type `Prometo.t('a, 'e)`. This allows you to explicitly track
 and manage errors at every point of the code where you use these
 promises.
 
+## Interoperability
+
+It's easy to interop with JavaScript promises:
+
+- Use `fromPromise` to convert from a JavaScript Promise to a Prometo
+  promise
+- `toPromise` to convert from Prometo to a JavaScript promise
+- `thenPromise` to chain together a Prometo promise and a function that
+  returns a JavaScript Promise, and keep the result as a type-safe
+  Prometo promise.
+
 ## Cancellation
 
 Prometo promises can be cancelled at any point of usage in the code,

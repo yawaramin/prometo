@@ -55,6 +55,12 @@ let make: 'a => t('a, error);
     returns it directly. */
 let map: (~f: 'a => 'b, t('a, 'e)) => t('b, 'e);
 
+/** [thenPromise(~f, t)] runs [f] on the result of the promise [t],
+    safely converting its resulting JavaScript Promise into a Prometo
+    promise. I.e., it lifts up JavaScript promise-chain functions into
+    Prometo promise-chain functions. */
+let thenPromise: (~f: 'a => Js.Promise.t('b), t('a, 'e)) => t('b, 'e);
+
 /** [toPromise(t)] converts the Prometo promise [t] into a standard
     JavaScript promise. This means 'unwrapping' the contained result
     value and rejecting the promise if the result was an error or if [t]
