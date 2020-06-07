@@ -31,8 +31,8 @@ module Error = {
     );
 
   let map = (~f, t) => flatMap(~f=e => e |> f |> make, t);
-  let forEach = (~f, t) => t |> map(~f) |> ignore;
   let recover = (~f, t) => flatMap(~f=e => e |> f |> ok, t);
+  let forEach = (~f, t) => t |> recover(~f) |> ignore;
 };
 
 [@bs.set_index]

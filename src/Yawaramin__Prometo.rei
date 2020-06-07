@@ -36,7 +36,7 @@ let flatMap: (~f: 'a => t('b, 'e), t('a, 'e)) => t('b, 'e);
 
 /** [forEach(~f, t)] calls [f] with the successful result of [t] and
     discards the result. If [t] is errored or cancelled, is a no-op. */
-let forEach: (~f: 'a => 'b, t('a, _)) => unit;
+let forEach: (~f: 'a => unit, t('a, _)) => unit;
 
 /** [fromArray(array)] chains the given [array] of promises in sequence,
     returning a single promise containing the array of results of the
@@ -105,7 +105,7 @@ module Infix: {
 module Error: {
   /** [forEach(~f, t)] calls [f] with the error result of [t] and
      discards the result. If [t] is succeeded or cancelled, is a no-op. */
-  let forEach: (~f: 'e1 => [> error], t('a, 'e1)) => unit;
+  let forEach: (~f: 'e => unit, t(_, 'e)) => unit;
 
   /** [flatMap(~f, t)] converts an errored promise [t] into a new promise
       using the function [f]. The new promise may be succeeded or errored,
@@ -131,5 +131,5 @@ module Error: {
       a successful result, or is cancelled, in which case this is a no-op.
       In other words: it's not possible (by design) to recover from a
       cancelled promise. */
-  let recover: (~f: 'e => 'a2, t('a1, 'e)) => t('a2, error);
+  let recover: (~f: 'e => 'a2, t('a1, 'e)) => t('a2, _);
 };
