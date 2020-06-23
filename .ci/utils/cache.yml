@@ -1,0 +1,18 @@
+parameters:
+  cache_key: pnpm-lock.yaml
+
+# The cache key is built up of the following:
+# We use a string that we can change to bust the cache
+# The string for the OS
+# The hash of the lock file
+steps:
+  - task: CacheBeta@1
+    inputs:
+      key: key1 | npm | $(Agent.OS) | ${{ parameters.cache_key }} 
+      path: $(CACHE_FOLDER)
+      cacheHitVar: CACHE_RESTORED
+    displayName: '[Cache] npm packages'
+
+  - script: 'mv $(CACHE_FOLDER) node_modules'
+    condition: eq(variables.CACHE_RESTORED, 'true')
+    displayName: '[Cache][Restore] Restore cached node_modules directory'

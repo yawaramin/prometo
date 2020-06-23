@@ -1,0 +1,3 @@
+steps:
+  - script: 'mv node_modules $(CACHE_FOLDER)'
+    displayName: '[Cache][Publish] Move node_modules to be cached'

@@ -1,0 +1,37 @@
+steps:
+  - script: |
+      git clone https://github.com/yawaramin/prometo.git .
+      git checkout gh-pages
+    workingDirectory: $(Build.StagingDirectory)
+    displayName: "Clone GitHub pages repo"
+
+  - script: |
+      rm -rf $(Build.StagingDirectory)/Yawaramin__Prometo || true
+      rm $(Build.StagingDirectory)/odoc.css || true
+      rm $(Build.StagingDirectory)/highlight.pack.js || true
+    displayName: Remove last version of the docs
+
+  - task: DownloadPipelineArtifact@2
+    displayName: Download docs
+    inputs:
+      artifactName: docs
+      targetPath: $(Build.StagingDirectory)
+
+  - task: DownloadSecureFile@1
+    inputs:
+      secureFile: deploy_key
+    displayName: 'Get the deploy key'
+
+  - script: |
+      mkdir ~/.ssh
+      mv $DOWNLOADSECUREFILE_SECUREFILEPATH ~/.ssh/id_rsa
+      chmod 700 ~/.ssh
+      chmod 600 ~/.ssh/id_rsa
+      ssh-keyscan -t rsa github.com >>~/.ssh/known_hosts
+      git remote set-url --push origin git@github.com:yawaramin/prometo.git
+      git config user.name "Prometo Docs Bot"
+      git add --all
+      git commit --amend --message "Generate docs"
+      git push --force origin gh-pages
+    workingDirectory: $(Build.StagingDirectory)
+    displayName: "Push docs to Github pages"

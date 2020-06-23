@@ -1,0 +1,7 @@
+steps:
+  - template: utils/use-node.yml
+  - template: utils/cache.yml
+  - script: "npm install"
+    displayName: "Install project"
+  - script: "npm run build"
+    displayName: "Run build"

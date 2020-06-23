@@ -1,0 +1,21 @@
+dependencies:
+  bs-platform: 7.3.2
+devDependencies:
+  bsdoc: 6.0.2-alpha
+lockfileVersion: 5.1
+packages:
+  /bs-platform/7.3.2:
+    dev: false
+    hasBin: true
+    requiresBuild: true
+    resolution:
+      integrity: sha512-seJL5g4anK9la4erv+B2o2sMHQCxDF6OCRl9en3hbaUos/S3JsusQ0sPp4ORsbx5eXfHLYBwPljwKXlgpXtsgQ==
+  /bsdoc/6.0.2-alpha:
+    dev: true
+    hasBin: true
+    requiresBuild: true
+    resolution:
+      integrity: sha512-Zr3Z4U+lynz6FK9vqz+45jTBlKgWJ6iUssQcAU+2QUGtGMg0TNEJz2QEOvwkz5ZFVv+gLbF+c8sbhkYO4OjLJg==
+specifiers:
+  bs-platform: ^7.0.1
+  bsdoc: ^6.0.2-alpha

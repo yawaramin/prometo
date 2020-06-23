@@ -1,0 +1,35 @@
+name: Build main - $(Build.BuildId)
+
+trigger:
+  branches:
+    include:
+      - main
+
+stages:
+- stage: Build
+  jobs:
+  - job: macOS
+    pool:
+      vmImage: "macOS-10.13"
+    variables:
+      CACHE_FOLDER: $(Pipeline.Workspace)/cache
+    steps:
+    - template: .ci/build-platform.yml
+    - template: .ci/build-docs.yml
+    - template: .ci/utils/prepare-cache.yml
+
+- stage: Publish_docs
+  displayName: Publish documentation
+  dependsOn: [Build]
+  jobs:
+  - deployment: Publish_docs
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    displayName: Publish docs to GitHub
+    environment: gh-pages
+    pool:
+      vmImage: ubuntu-16.04
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - template: .ci/publish-api-docs.yml

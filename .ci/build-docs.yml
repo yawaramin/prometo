@@ -1,0 +1,10 @@
+steps:
+  - script: "npx bsdoc Yawaramin__Prometo"
+    displayName: "[docs] Build"
+
+  - script: "npx bsdoc support-files"
+    displayName: "[docs] Copy support files"
+
+  - publish: docs
+    displayName: "[docs] Publish Artifact: docs"
+    artifact: docs
