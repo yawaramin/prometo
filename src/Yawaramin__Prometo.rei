@@ -1,4 +1,4 @@
-/** Type-safe, cancelable JavaScript promises for ReasonML. */
+[@text {|Type-safe, cancelable JavaScript promises for ReasonML.|}]
 
 /** The 'base' error type of all Prometo promises. If a promise is in a
     failed state, it is always possible for the failure to be from a
@@ -68,10 +68,10 @@ let thenPromise: (~f: 'a => Js.Promise.t('b), t('a, 'e)) => t('b, 'e);
 let toPromise:
   t('a, [> error | `Prometo_error(Js.Promise.error)]) => Js.Promise.t('a);
 
-/** {2 Joining promises together}
+[@text {|{2 Joining promises together}
 
     The following functions join multiple promises together into a single
-    promise containing the results of all the individual promises. */
+    promise containing the results of all the individual promises.|}]
 
 let zip2: (t('a1, 'e), t('a2, 'e)) => t(('a1, 'a2), 'e);
 let zip3: (t('a1, 'e), t('a2, 'e), t('a3, 'e)) => t(('a1, 'a2, 'a3), 'e);
