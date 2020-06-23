@@ -85,5 +85,4 @@ Prometo.cancel(result); // won't work, too late, setState has already been calle
 
 ## API docs
 
-Please go to
-https://yawaramin.github.io/prometo/Yawaramin__Prometo/Yawaramin__Prometo/
+Please go to https://yawaramin.github.io/prometo/
