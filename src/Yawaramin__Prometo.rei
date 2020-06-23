@@ -1,4 +1,4 @@
-[@text {|Type-safe, cancelable JavaScript promises for ReasonML.|}]
+[@text {|Type-safe, cancelable JavaScript promises for ReasonML.|}];
 
 /** The 'base' error type of all Prometo promises. If a promise is in a
     failed state, it is always possible for the failure to be from a
@@ -28,15 +28,7 @@ type t(+_, 'e) constraint 'e = [> error];
     be cancelled. */
 let cancel: t(_, _) => unit;
 
-/** [flatMap(~f, t)] runs the function [f] on the completion result of
-    promise [t], unless [t] is in an error state or is cancelled. If
-    successful it returns the result of [f]. If [f] throws an exception
-    it catches and safely returns a promise in an error state. */
-let flatMap: (~f: 'a => t('b, 'e), t('a, 'e)) => t('b, 'e);
-
-/** [forEach(~f, t)] calls [f] with the successful result of [t] and
-    discards the result. If [t] is errored or cancelled, is a no-op. */
-let forEach: (~f: 'a => unit, t('a, _)) => unit;
+[@text {|{1 Creating promises}|}];
 
 /** [fromArray(array)] chains the given [array] of promises in sequence,
     returning a single promise containing the array of results of the
@@ -49,6 +41,18 @@ let fromPromise: Js.Promise.t('a) => t('a, _);
 
 /** [make(a)] returns a promise which contains the successful result [a]. */
 let make: 'a => t('a, error);
+
+[@text {|{1 Processing promises}|}];
+
+/** [flatMap(~f, t)] runs the function [f] on the completion result of
+    promise [t], unless [t] is in an error state or is cancelled. If
+    successful it returns the result of [f]. If [f] throws an exception
+    it catches and safely returns a promise in an error state. */
+let flatMap: (~f: 'a => t('b, 'e), t('a, 'e)) => t('b, 'e);
+
+/** [forEach(~f, t)] calls [f] with the successful result of [t] and
+    discards the result. If [t] is errored or cancelled, is a no-op. */
+let forEach: (~f: 'a => unit, t('a, _)) => unit;
 
 /** [map(~f, t)] returns a promise which has the result of calling [f] on
     the input promise [t]'s result. If [t] is errored or cancelled,
@@ -68,10 +72,10 @@ let thenPromise: (~f: 'a => Js.Promise.t('b), t('a, 'e)) => t('b, 'e);
 let toPromise:
   t('a, [> error | `Prometo_error(Js.Promise.error)]) => Js.Promise.t('a);
 
-[@text {|{2 Joining promises together}
+[@text {|{1 Joining promises together}
 
     The following functions join multiple promises together into a single
-    promise containing the results of all the individual promises.|}]
+    promise containing the results of all the individual promises.|}];
 
 let zip2: (t('a1, 'e), t('a2, 'e)) => t(('a1, 'a2), 'e);
 let zip3: (t('a1, 'e), t('a2, 'e), t('a3, 'e)) => t(('a1, 'a2, 'a3), 'e);
