@@ -83,5 +83,7 @@ let result = "https://example.com"
 Prometo.cancel(result); // won't work, too late, setState has already been called
 ```
 
-## Add to project
+## API docs
 
+Please go to
+https://yawaramin.github.io/prometo/Yawaramin__Prometo/Yawaramin__Prometo/
