@@ -1,5 +1,5 @@
 steps:
-  - script: "npx bsdoc Yawaramin__Prometo"
+  - script: "npx bsdoc build Yawaramin__Prometo"
     displayName: "[docs] Build"
 
   - script: "npx bsdoc support-files"
