@@ -10,7 +10,7 @@ stages:
   jobs:
   - job: macOS
     pool:
-      vmImage: "macOS-10.13"
+      vmImage: macOS-latest
     variables:
       CACHE_FOLDER: $(Pipeline.Workspace)/cache
     steps:
