@@ -30,6 +30,7 @@ steps:
       ssh-keyscan -t rsa github.com >>~/.ssh/known_hosts
       git remote set-url --push origin git@github.com:yawaramin/prometo.git
       git config user.name "Prometo Docs Bot"
+      cp index.html Yawaramin__Prometo/index.html
       git add --all
       git commit --amend --message "Generate docs"
       git push --force origin gh-pages
