@@ -1,9 +1,4 @@
 steps:
-  # Ensure docs/ directory is clean for odoc output
-  - task: DeleteFiles@1
-    inputs:
-      Contents: 'docs'
-
   - script: "npx bsdoc build Yawaramin__Prometo"
     displayName: "[docs] Build"
 

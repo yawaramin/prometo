@@ -6,7 +6,7 @@ parameters:
 # The string for the OS
 # The hash of the lock file
 steps:
-  - task: Cache@2
+  - task: CacheBeta@1
     inputs:
       key: key1 | npm | $(Agent.OS) | ${{ parameters.cache_key }} 
       path: $(CACHE_FOLDER)
