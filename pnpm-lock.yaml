@@ -1,11 +1,10 @@
-dependencies:
-  bs-platform: 7.3.2
 devDependencies:
+  bs-platform: 7.3.2
   bsdoc: 6.0.2-alpha
 lockfileVersion: 5.1
 packages:
   /bs-platform/7.3.2:
-    dev: false
+    dev: true
     hasBin: true
     requiresBuild: true
     resolution:
