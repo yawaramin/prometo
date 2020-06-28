@@ -8,7 +8,7 @@ type cancelledSymbol;
 let cancelledSymbol = cancelledSymbol();
 
 [@bs.get_index]
-external cancelled: (t(_, _), cancelledSymbol) => option(bool) = "";
+external cancelled: (t(_, _), cancelledSymbol) => option(bool);
 let cancelled = t => cancelled(t, cancelledSymbol);
 
 let make = a => Js.Promise.resolve(Ok(a));
@@ -35,8 +35,7 @@ module Error = {
   let forEach = (~f, t) => t |> recover(~f) |> ignore;
 };
 
-[@bs.set_index]
-external cancel: (t(_, _), cancelledSymbol, bool) => unit = "";
+[@bs.set_index] external cancel: (t(_, _), cancelledSymbol, bool) => unit;
 let cancel = t => cancel(t, cancelledSymbol, true);
 
 let updateResult = (result, elem) =>
@@ -72,6 +71,20 @@ let flatMap = (~f, t) =>
       | (Error(err), _) => Error.make(err)
       },
     t,
+  );
+
+let handle = (~f, t) =>
+  Js.Promise.(
+    then_(
+      result =>
+        switch (result, cancelled(t)) {
+        | (Error(`Prometo_cancelled), _)
+        | (_, Some(true)) => Error.make(`Prometo_cancelled)
+        | (Ok(_) | Error(_), _) =>
+          result |> f |> resolve |> catch(e => Error.make(`Prometo_error(e)))
+        },
+      t,
+    )
   );
 
 let map = (~f) => flatMap(~f=a => a |> f |> make);

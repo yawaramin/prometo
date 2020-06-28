@@ -54,6 +54,14 @@ let flatMap: (~f: 'a => t('b, 'e), t('a, 'e)) => t('b, 'e);
     discards the result. If [t] is errored or cancelled, is a no-op. */
 let forEach: (~f: 'a => unit, t('a, _)) => unit;
 
+/** [handle(~f, t)] calls [f] with the result of [t] and returns a
+    promise with the transformed result. If [t] is cancelled, it's a
+    no-op. I.e., it's impossible (by design) to handle a cancelled
+    promise.
+
+    @since 0.11.0 */
+let handle: (~f: result('a, 'e) => result('b, 'e), t('a, 'e)) => t('b, 'e);
+
 /** [map(~f, t)] returns a promise which has the result of calling [f] on
     the input promise [t]'s result. If [t] is errored or cancelled,
     returns it directly. */
@@ -72,10 +80,12 @@ let thenPromise: (~f: 'a => Js.Promise.t('b), t('a, 'e)) => t('b, 'e);
 let toPromise:
   t('a, [> error | `Prometo_error(Js.Promise.error)]) => Js.Promise.t('a);
 
-[@text {|{1 Joining promises together}
+[@text
+  {|{1 Joining promises together}
 
-    The following functions join multiple promises together into a single
-    promise containing the results of all the individual promises.|}];
+The following functions join multiple promises together into a single
+promise containing the results of all the individual promises.|}
+];
 
 let zip2: (t('a1, 'e), t('a2, 'e)) => t(('a1, 'a2), 'e);
 let zip3: (t('a1, 'e), t('a2, 'e), t('a3, 'e)) => t(('a1, 'a2, 'a3), 'e);

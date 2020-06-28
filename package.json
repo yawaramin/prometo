@@ -1,6 +1,6 @@
 {
   "name": "@yawaramin/prometo",
-  "version": "0.10.1",
+  "version": "0.11.0",
   "scripts": {
     "clean": "bsb -clean-world",
     "build": "bsb -make-world",
