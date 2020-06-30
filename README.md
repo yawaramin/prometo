@@ -1,5 +1,8 @@
 ## Prometo
 
+[![npm](https://img.shields.io/npm/v/@yawaramin/prometo.svg)](https://npmjs.org/package/@yawaramin/prometo)
+[![Build Status](https://dev.azure.com/yawaramin/prometo/_apis/build/status/yawaramin.prometo?branchName=main)](https://dev.azure.com/yawaramin/prometo/_build/latest?definitionId=1&branchName=main)
+
 A type-safe promise type for ReasonML, built directly on top of
 JavaScript but adding fine-grained error control and promise
 cancellation.
@@ -82,6 +85,20 @@ let result = "https://example.com"
 // later...
 Prometo.cancel(result); // won't work, too late, setState has already been called
 ```
+
+## Add to project
+
+- Add the `@yawaramin/prometo` project to your `package.json` (version
+  number in badge at the top of the readme)
+- Add the `@yawaramin/prometo` dependency to your `bs-dependencies` list
+  in `bsconfig.json`
+- Run `npx bsb -clean-world`, then `npx bsb -make-world`
+- (Optional but
+  [recmomended](https://dev.to/yawaramin/consuming-a-modular-ocaml-project-structure-1a2e))
+  if you don't have one already, create a `Yawaramin.re` (or `.ml`) file
+  under `src/` and alias the Prometo main module there:
+  `module Prometo = Yawaramin__Prometo`. This lets you access it under
+  the `Yawaramin.Prometo` namespace throughout your project 
 
 ## API docs
 
