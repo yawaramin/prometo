@@ -39,6 +39,7 @@ stages:
 
 - stage: Publish_npm
   displayName: Publish release to npm
+  dependsOn: [Build]
   jobs:
   - job: Publish_npm
     condition: startsWith(variables['build.sourceBranch'], 'refs/tags/')
