@@ -40,7 +40,7 @@ let fromArray: array(t('a, 'e)) => t(array('a), 'e);
 let fromPromise: Js.Promise.t('a) => t('a, _);
 
 /** [make(a)] returns a promise which contains the successful result [a]. */
-let make: 'a => t('a, error);
+let make: 'a => t('a, [> error ]);
 
 [@text {|{1 Processing promises}|}];
 
