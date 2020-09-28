@@ -5,7 +5,7 @@ trigger:
   branches:
     include:
       - main
-      - refs/tags/*
+      - refs/tags/v*
 
 stages:
 - stage: Build
@@ -42,7 +42,7 @@ stages:
   dependsOn: [Build]
   jobs:
   - job: Publish_npm
-    condition: startsWith(variables['build.sourceBranch'], 'refs/tags/')
+    condition: startsWith(variables['build.sourceBranch'], 'refs/tags/v')
     steps:
     - task: Npm@1
       inputs:
